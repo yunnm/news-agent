@@ -1,0 +1,14 @@
+# 阿里云函数计算部署时忽略的文件
+.git
+.gitignore
+.env
+.env.example
+Procfile
+.fcignore
+README*.md
+DEPLOY*.md
+*.pyc
+__pycache__
+.venv
+node_modules
+pkgs

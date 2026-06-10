@@ -2,6 +2,5 @@ openai
 requests
 feedparser
 python-dotenv
-schedule
 yfinance
 pandas

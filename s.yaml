@@ -1,0 +1,37 @@
+# Serverless Devs 配置 - 阿里云函数计算 FC 3.0
+# 安装 Serverless Devs: npm install -g @serverless-devs/s
+# 配置阿里云凭证:      s config add
+# 部署:                s deploy
+# 仅部署函数(不重建触发器): s deploy function
+
+edition: 3.0.0
+name: daily-news-bot
+access: default
+
+resources:
+  news_function:
+    component: fc3
+    props:
+      region: cn-hangzhou
+      functionName: daily-news-bot
+      description: 每日全球科技金融晨报，通过 DeepSeek AI 汇总后以邮件推送
+      runtime: python3.10
+      handler: index.handler
+      memorySize: 512
+      timeout: 300
+      environmentVariables:
+        DEEPSEEK_API_KEY: ${env(DEEPSEEK_API_KEY)}
+        EMAIL_ADDRESS: ${env(EMAIL_ADDRESS)}
+        EMAIL_PASSWORD: ${env(EMAIL_PASSWORD)}
+        EMAIL_HOST: ${env(EMAIL_HOST)}
+        EMAIL_PORT: ${env(EMAIL_PORT)}
+        EMAIL_TO: ${env(EMAIL_TO)}
+      code: ./
+      triggers:
+        - triggerName: dailyTimer
+          triggerType: timer
+          triggerConfig:
+            # 每天北京时间 8:00 执行 (UTC+8)
+            cronExpression: "0 0 8 * * *"
+            enable: true
+            payload: ""
