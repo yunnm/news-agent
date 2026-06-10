@@ -1,7 +1,6 @@
 # 从 Railway 迁移到阿里云函数计算 — 部署指南
 
-本项目的定时任务已从 Railway Worker 迁移到阿里云函数计算（FC 3.0），
-推送方式也由 Telegram 改为网易邮箱 SMTP。
+本项目的定时任务已从 Railway Worker 迁移到阿里云函数计算（FC 3.0），推送方式也由 Telegram 改为网易邮箱 SMTP。
 
 ## 为什么选函数计算
 
@@ -26,7 +25,7 @@
 1. 登录 [网易邮箱](https://mail.163.com)（也支持 126.com / yeah.net）
 2. 进入 **设置 → POP3/SMTP/IMAP**
 3. 开启 **SMTP 服务**
-4. 系统会生成一个 **授权码**（注意：这是授权码，不是你邮箱的登录密码）
+4. 系统会生成一个 **授权码**（注意：这是授权码，不是你的邮箱登录密码）
 5. 保存这个授权码，后面配置 `EMAIL_PASSWORD` 时会用到
 
 ## 部署步骤
@@ -67,6 +66,7 @@ EMAIL_TO=收件人@example.com
 ### 4. 设置环境变量并部署
 
 **PowerShell:**
+
 ```powershell
 $env:DEEPSEEK_API_KEY="sk-xxxxxxxx"
 $env:EMAIL_ADDRESS="your_email@163.com"
@@ -74,7 +74,7 @@ $env:EMAIL_PASSWORD="你的SMTP授权码"
 $env:EMAIL_HOST="smtp.163.com"
 $env:EMAIL_PORT="465"
 $env:EMAIL_TO="收件人@example.com"
-s deploy
+s deploy -y
 ```
 
 ### 5. 验证
@@ -85,7 +85,7 @@ s deploy
 
 ## 调整定时执行时间
 
-编辑 `s.yaml` 中的 `cronExpression`，修改后重新 `s deploy`：
+编辑 `s.yaml` 中的 `cronExpression`，修改后重新 `s deploy -y`：
 
 ```yaml
 cronExpression: "0 0 8 * * *"   # 每天 8:00
@@ -93,7 +93,7 @@ cronExpression: "0 30 8 * * *"  # 每天 8:30
 cronExpression: "0 0 20 * * *"  # 每天 20:00
 ```
 
-格式：`分 时 日 月 周 年`
+格式：`秒 分 时 日 月 周`
 
 ## 换用其他网易域名
 
@@ -107,7 +107,7 @@ cronExpression: "0 0 20 * * *"  # 每天 20:00
 
 ## 后续维护
 
-- **更新代码**：修改代码后执行 `s deploy function`（仅更新函数，不重建触发器）
+- **更新代码**：修改代码后执行 `s deploy function -y`（仅更新函数，不重建触发器）
 - **查看日志**：在 FC 控制台 → 函数详情 → 调用日志，或使用 `s logs`
 - **监控告警**：在 FC 控制台配置错误率告警，阈值建议设为 1 次/24h
 - **删除服务**：`s remove`（会删除函数和触发器，不可恢复）
